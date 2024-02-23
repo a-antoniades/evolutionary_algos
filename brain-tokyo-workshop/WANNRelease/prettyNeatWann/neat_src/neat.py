@@ -158,6 +158,8 @@ def loadHyp(pFileName, printHyp=False):
   else:
     hyp['ann_actRange'] = np.full_like(task.actRange,hyp['alg_act'])
 
+  print(f"activations: {hyp['ann_actRange']}, actRange: {task.actRange}")
+  exit()
 
 
   if printHyp is True:

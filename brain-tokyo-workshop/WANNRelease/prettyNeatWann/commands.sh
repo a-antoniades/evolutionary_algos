@@ -1,0 +1,1 @@
+python neat_train.py -p "./p/smilevolley_neat.json" -n 8 
