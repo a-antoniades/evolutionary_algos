@@ -69,7 +69,7 @@ class NeatDataGatherer():
     self.fit_med  = np.append(self.fit_med, np.median(fitness))
     self.fit_max  = np.append(self.fit_max,  self.elite[-1].fitness)
     self.fit_top  = np.append(self.fit_top,  self.best[-1].fitness)
-    # ------------------------------------------------------------------------ 
+    # ------------------------------------------------------------------------
 
 
     # --- MOO Fronts ---------------------------------------------------------
@@ -122,6 +122,11 @@ class NeatDataGatherer():
     wMat = self.best[gen].wMat
     aVec = self.best[gen].aVec
     exportNet(pref + '_best.out',wMat,aVec)
+
+    if self.fit_top[-1] > 4:
+      print(f"Best Fitness: {self.fit_top[-1]}, mission complete!!!, saved in {pref + '_best.out'}")
+      # close the program
+      exit(0)
     
     if gen > 1:
       folder = 'log/' + filename + '_best/'

@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import sys
+import imageio
 from domain.make_env import make_env
 from neat_src import *
 
@@ -36,7 +37,7 @@ class GymTask():
     # Special needs...
     self.needsClosed = (game.env_name.startswith("CartPoleSwingUp"))    
   
-  def getFitness(self, wVec, aVec, view=False, nRep=False, seed=-1):
+  def getFitness(self, wVec, aVec, view=False, nRep=False, seed=-1, return_all=False):
     """Get fitness of a single individual.
   
     Args:
@@ -62,9 +63,12 @@ class GymTask():
         seed = seed+iRep
       reward[iRep] = self.testInd(wVec, aVec, view=view, seed=seed)
     fitness = np.mean(reward)
-    return fitness
+    if return_all:
+      return fitness, reward
+    else:   
+      return fitness
 
-  def testInd(self, wVec, aVec, hyp=None, view=False,seed=-1):
+  def testInd(self, wVec, aVec, hyp=None, view=False, seed=-1, record_gif=False, gif_path='game.gif'):
     """Evaluate individual on task
     Args:
       wVec    - (np_array) - weight matrix as a flattened vector
@@ -86,9 +90,14 @@ class GymTask():
 
     state = self.env.reset()
     self.env.t = 0
+    frames = []
     annOut = act(wVec, aVec, self.nInput, self.nOutput, state)  
     action = selectAct(annOut,self.actSelect)    
     state, reward, done, info = self.env.step(action)
+
+    # print(f"action: {action}, action shape: {action.shape}, action dtype: {action.dtype}")
+    # print(f"state: {state}, state shape: {state.shape}, state dtype: {state.dtype}")
+    # exit()
     
     if self.maxEpisodeLength == 0:
       if view:
@@ -105,11 +114,15 @@ class GymTask():
       action = selectAct(annOut,self.actSelect) 
       state, reward, done, info = self.env.step(action)
       totalReward += reward  
-      if view:
-        if self.needsClosed:
-          self.env.render(close=done)  
-        else:
-          self.env.render()
+      
+      if view or record_gif:
+                frame = self.env.render(mode='rgb_array')
+                frames.append(frame)
+
       if done:
         break
+
+    if record_gif:
+        imageio.mimsave(gif_path, frames, fps=30)  # Save frames as gif
+
     return totalReward

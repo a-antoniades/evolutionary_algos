@@ -29,10 +29,12 @@ def main(argv):
   # Import and Test network
   wVec, aVec, wKey = importNet(infile)
   fitness = np.empty(1)
-  fitness[:] = task.getFitness(wVec, aVec, view=view, nRep=nRep)
+  fitness[:], all_fitness = task.getFitness(wVec, aVec, view=view, nRep=nRep, return_all=True)
 
   print("[***]\tFitness:", fitness) 
   lsave(outPref+'fitDist.out',fitness)
+
+  print(f"max fitness: {np.max(all_fitness)}")
   
 
 def str2bool(v):
