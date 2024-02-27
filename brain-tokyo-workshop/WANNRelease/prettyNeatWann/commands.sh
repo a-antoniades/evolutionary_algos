@@ -1,4 +1,4 @@
-python neat_train.py -p "./p/smilevolley_neat.json" -n 16 
+python neat_train.py -p "./p/smilevolley_neat.json" -n 8 
 
 
 python neat_test.py \

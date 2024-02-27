@@ -21,7 +21,17 @@ from tqdm import tqdm
 def master(): 
   """Main NEAT optimization script
   """
-  global fileName, hyp
+
+  global fileName, hyp, save_dir
+
+  save_dir = 'log'
+  if os.path.exists(save_dir):
+    n = 0
+    while os.path.exists(f'log_{n}'):
+      n += 1
+    save_dir = f'log_{n}'
+  os.makedirs(save_dir)
+
   data = NeatDataGatherer(fileName, hyp)
   alg  = Neat(hyp)
 
@@ -61,7 +71,7 @@ def gatherData(data,alg,gen,hyp,savePop=False):
 
   if savePop is True: # Get a sample pop to play with in notebooks    
     global fileName
-    pref = 'log/' + fileName
+    pref = os.path.join(save_dir, fileName)
     import pickle
     with open(pref+'_pop.obj', 'wb') as fp:
       pickle.dump(alg.pop,fp)
