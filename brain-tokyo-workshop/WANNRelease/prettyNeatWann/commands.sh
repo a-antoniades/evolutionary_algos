@@ -6,4 +6,4 @@ python neat_test.py \
                 -d "./p/smilevolley_neat.json" \
                 -p "./p/smilevolley_neat.json" \
                 -r 4 \
-                -v false
+                -v true
