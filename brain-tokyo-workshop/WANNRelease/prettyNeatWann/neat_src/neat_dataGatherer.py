@@ -1,19 +1,52 @@
 import os
 import numpy as np
 import copy
+import json
 from .ann import exportNet
+
+
+def save_json_serializable(data, filename):
+    """
+    Convert a dictionary with numpy data types to a JSON-serializable dictionary
+    and save it to a file.
+
+    Args:
+        data (dict): The dictionary to convert.
+        filename (str): The path to the file where the JSON will be saved.
+    """
+    def convert(data):
+        if isinstance(data, dict):
+            return {key: convert(value) for key, value in data.items()}
+        elif isinstance(data, np.integer):
+            return int(data)
+        elif isinstance(data, np.floating):
+            return float(data)
+        elif isinstance(data, np.ndarray):
+            return data.tolist()
+        else:
+            return data
+
+    serializable_data = convert(data)
+
+    with open(filename, 'w') as f:
+        json.dump(serializable_data, f, indent=4)
+
 
 class NeatDataGatherer():
   """Data recorder for NEAT algorithm
   """
-  def __init__(self, filename, hyp): 
+  def __init__(self, save_dir, filename, hyp): 
     """
     Args:
       filename - (string) - path+prefix of file output destination
       hyp      - (dict)   - algorithm hyperparameters
     """
+    self.save_dir = save_dir
     self.filename = filename # File name path + prefix
+    print(f"filenameee: {filename}")
     self.p = hyp
+    # save hyperparameters (json)
+    save_json_serializable(hyp, os.path.join(save_dir, filename + '_hyp.json'))
     
     # Initialize empty fields
     self.elite = []
@@ -104,7 +137,7 @@ class NeatDataGatherer():
     """
     ''' Save data to disk '''
     filename = self.filename
-    pref = 'log/' + filename
+    pref = self.save_dir + filename
 
     # --- Generation fit/complexity stats ------------------------------------ 
     gStatLabel = ['x_scale',\
@@ -123,13 +156,13 @@ class NeatDataGatherer():
     aVec = self.best[gen].aVec
     exportNet(pref + '_best.out',wMat,aVec)
 
-    if self.fit_top[-1] > 4:
-      print(f"Best Fitness: {self.fit_top[-1]}, mission complete!!!, saved in {pref + '_best.out'}")
-      # close the program
-      exit(0)
+    # if self.fit_top[-1] > 4:
+    #   print(f"Best Fitness: {self.fit_top[-1]}, mission complete!!!, saved in {pref + '_best.out'}")
+    #   # close the program
+    #   exit(0)
     
     if gen > 1:
-      folder = 'log/' + filename + '_best/'
+      folder = self.save_dir + filename + '_best/'
       if not os.path.exists(folder):
         os.makedirs(folder)
       exportNet(folder + str(gen).zfill(4) +'.out',wMat,aVec)
@@ -150,7 +183,7 @@ class NeatDataGatherer():
   def savePop(self,pop,filename):
     """Save all individuals in population as numpy arrays
     """
-    folder = 'log/' + filename + '_pop/'
+    folder = self.save_dir + filename + '_pop/'
     if not os.path.exists(folder):
       os.makedirs(folder)
 

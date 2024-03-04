@@ -24,15 +24,17 @@ def master():
 
   global fileName, hyp, save_dir
 
-  save_dir = 'log'
+  save_dir = 'log/'
   if os.path.exists(save_dir):
     n = 0
     while os.path.exists(f'log_{n}'):
       n += 1
-    save_dir = f'log_{n}'
+    save_dir = f'log_{n}/'
   os.makedirs(save_dir)
 
-  data = NeatDataGatherer(fileName, hyp)
+  print(f"filename----: {fileName}")
+
+  data = NeatDataGatherer(save_dir, fileName, hyp)
   alg  = Neat(hyp)
 
   for gen in tqdm(range(hyp['maxGen']), desc='Generations'):         
