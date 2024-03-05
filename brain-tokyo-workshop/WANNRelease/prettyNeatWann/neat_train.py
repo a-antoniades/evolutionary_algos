@@ -23,13 +23,14 @@ def master():
   """
 
   global fileName, hyp, save_dir
-
-  save_dir = 'log/'
+  
+  folderName = hyp['task']
+  save_dir = f"{folderName}/"
   if os.path.exists(save_dir):
     n = 0
-    while os.path.exists(f'log_{n}'):
+    while os.path.exists(f'{folderName}_{n}'):
       n += 1
-    save_dir = f'log_{n}/'
+    save_dir = f'./training/{folderName}_{n}/'
   os.makedirs(save_dir)
 
   print(f"filename----: {fileName}")
