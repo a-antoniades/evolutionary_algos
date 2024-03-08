@@ -97,26 +97,30 @@ def checkBest(data):
   * This is a bit hacky, but is only for data gathering, and not optimization
   """
   global filename, hyp
-  if data.newBest is True:
-    bestReps = max(hyp['bestReps'], (nWorker-1))
-    rep = np.tile(data.best[-1], bestReps)
-    print(f"bestReps: {bestReps},  rep: {rep}")
-    fitVector = batchMpiEval(rep, sameSeedForEachIndividual=False)
-    trueFit = np.mean(fitVector)
-    if len(data.best) > 1:
-      if trueFit > data.best[-2].fitness:  # Actually better!      
-        data.best[-1].fitness = trueFit
-        data.fit_top[-1]      = trueFit
-        data.bestFitVec = fitVector
-      else:                                # Just lucky!
-        prev = hyp['save_mod']
-        data.best[-prev:]    = data.best[-prev]
-        data.fit_top[-prev:] = data.fit_top[-prev]
-        data.newBest = False
-    elif len(data.best) <= 1:
-      data.best[-1].fitness = trueFit
-      data.fit_top[-1]      = trueFit
-      data.bestFitVec = fitVector
+  # if data.newBest is True:
+  #   print('Checking new best')
+  #   bestReps = max(hyp['bestReps'], (nWorker-1))
+  #   rep = np.tile(data.best[-1], bestReps)
+  #   fitVector = batchMpiEval(rep, sameSeedForEachIndividual=False)
+  #   print(f"fitVector: {fitVector}")
+  #   trueFit = np.mean(fitVector)
+  #   print(f"trueFit: {trueFit}")
+  #   if len(data.best) > 1:
+  #     if trueFit > data.best[-2].fitness:  # Actually better!
+  #       print(F"New best: {trueFit} > {data.best[-2].fitness}")      
+  #       data.best[-1].fitness = trueFit
+  #       data.fit_top[-1]      = trueFit
+  #       data.bestFitVec = fitVector
+  #     else:                                # Just lucky!
+  #       print(F"Best not better: {trueFit} <= {data.best[-2].fitness}")
+  #       prev = hyp['save_mod']
+  #       data.best[-prev:]    = data.best[-prev]
+  #       data.fit_top[-prev:] = data.fit_top[-prev]
+  #       data.newBest = False
+  #   elif len(data.best) <= 1:
+  #     data.best[-1].fitness = trueFit
+  #     data.fit_top[-1]      = trueFit
+  #     data.bestFitVec = fitVector
   return data
 
 
