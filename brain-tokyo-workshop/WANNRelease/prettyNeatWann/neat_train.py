@@ -25,10 +25,10 @@ def master():
   global fileName, hyp, save_dir
   
   folderName = hyp['task']
-  save_dir = f"{folderName}/"
+  save_dir = f"./training/{folderName}/"
   if os.path.exists(save_dir):
     n = 0
-    while os.path.exists(f'{folderName}_{n}'):
+    while os.path.exists(f'./training/{folderName}_{n}/'):
       n += 1
     save_dir = f'./training/{folderName}_{n}/'
   os.makedirs(save_dir)
@@ -71,6 +71,7 @@ def gatherData(data,alg,gen,hyp,savePop=False):
   if (gen%hyp['save_mod']) is 0:
     data = checkBest(data)
     data.save(gen)
+    print(f" -- saved in {save_dir} at generation {gen} -- ")
 
   if savePop is True: # Get a sample pop to play with in notebooks    
     global fileName

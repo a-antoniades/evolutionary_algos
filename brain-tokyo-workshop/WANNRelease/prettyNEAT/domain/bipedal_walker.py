@@ -148,7 +148,7 @@ class BipedalWalker(gym.Env):
         self.timer = 0
 
     def seed(self, seed=None):
-        self.np_random, seed = seeding.np_random(seed)
+        self.np_random = np.random.default_rng(seed)
         return [seed]
 
     def _destroy(self):

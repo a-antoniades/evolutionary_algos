@@ -6,7 +6,7 @@ def parse_args():
     parser = ArgumentParser(description='View and save topology of neural network.')
     parser.add_argument('--path', type=str, default='demo/swingup/test_best.out',
                         help='Path to the .out file or directory containing multiple .out files')
-    parser.add_argument('--task', type=str, default='swingup',
+    parser.add_argument('--task', type=str, default='slimevolley',
                         help='Task to visualize')
     return parser.parse_args()
 
@@ -24,7 +24,7 @@ def main():
     for file_path in sorted(files):
         # View the individual network
         try:
-            result = nv.viewInd(file_path, 'slimevolley')
+            result = nv.viewInd(file_path, args.task)
         except:
             result = None
             print(f"Error visualizing {file_path}")

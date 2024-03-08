@@ -87,6 +87,7 @@ class NeatDataGatherer():
     self.elite.append(pop[np.argmax(fitness)])
     if len(self.best) is 0:
       self.best = copy.deepcopy(self.elite)
+      self.newBest = True
     elif (self.elite[-1].fitness > self.best[-1].fitness):
       self.best = np.append(self.best,copy.deepcopy(self.elite[-1]))
       self.newBest = True

@@ -31,10 +31,14 @@ def main(argv):
   fitness = np.empty(1)
   fitness[:], all_fitness = task.getFitness(wVec, aVec, view=view, nRep=nRep, return_all=True)
 
-  print("[***]\tFitness:", fitness) 
-  lsave(outPref+'fitDist.out',fitness)
+  print("[***]\tFitness:", fitness)
+  lsave_dir = os.path.join(os.path.dirname(argv.infile), 'eval')
+  if not os.path.exists(lsave_dir):
+    os.makedirs(lsave_dir, exist_ok=True)
+  print(f"Saving to {lsave_dir}")
+  lsave_pth = os.path.join(lsave_dir, "fitDist.out")
+  lsave(lsave_pth,fitness)
 
-  print(f"max fitness: {np.max(all_fitness)}")
   
 
 def str2bool(v):
