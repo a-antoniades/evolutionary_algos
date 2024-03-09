@@ -97,30 +97,33 @@ def checkBest(data):
   * This is a bit hacky, but is only for data gathering, and not optimization
   """
   global filename, hyp
-  # if data.newBest is True:
-  #   print('Checking new best')
-  #   bestReps = max(hyp['bestReps'], (nWorker-1))
-  #   rep = np.tile(data.best[-1], bestReps)
-  #   fitVector = batchMpiEval(rep, sameSeedForEachIndividual=False)
-  #   print(f"fitVector: {fitVector}")
-  #   trueFit = np.mean(fitVector)
-  #   print(f"trueFit: {trueFit}")
-  #   if len(data.best) > 1:
-  #     if trueFit > data.best[-2].fitness:  # Actually better!
-  #       print(F"New best: {trueFit} > {data.best[-2].fitness}")      
-  #       data.best[-1].fitness = trueFit
-  #       data.fit_top[-1]      = trueFit
-  #       data.bestFitVec = fitVector
-  #     else:                                # Just lucky!
-  #       print(F"Best not better: {trueFit} <= {data.best[-2].fitness}")
-  #       prev = hyp['save_mod']
-  #       data.best[-prev:]    = data.best[-prev]
-  #       data.fit_top[-prev:] = data.fit_top[-prev]
-  #       data.newBest = False
-  #   elif len(data.best) <= 1:
-  #     data.best[-1].fitness = trueFit
-  #     data.fit_top[-1]      = trueFit
-  #     data.bestFitVec = fitVector
+  if data.newBest is True:
+    if args.no_check_best:
+      print('Skipping new best check... ')
+    else:
+      print('Checking new best')
+      bestReps = max(hyp['bestReps'], (nWorker-1))
+      rep = np.tile(data.best[-1], bestReps)
+      fitVector = batchMpiEval(rep, sameSeedForEachIndividual=False)
+      print(f"fitVector: {fitVector}")
+      trueFit = np.mean(fitVector)
+      print(f"trueFit: {trueFit}")
+      if len(data.best) > hyp['save_mod'] + 1:
+        if trueFit > data.best[-2].fitness:  # Actually better!
+          print(F"New best: {trueFit} > {data.best[-2].fitness}")      
+          data.best[-1].fitness = trueFit
+          data.fit_top[-1]      = trueFit
+          data.bestFitVec = fitVector
+        else:                                # Just lucky!
+          print(F"Best not better: {trueFit} <= {data.best[-2].fitness}")
+          prev = hyp['save_mod']
+          data.best[-prev:]    = data.best[-prev]
+          data.fit_top[-prev:] = data.fit_top[-prev]
+          data.newBest = False
+      elif len(data.best) <= hyp['save_mod'] + 1:
+        data.best[-1].fitness = trueFit
+        data.fit_top[-1]      = trueFit
+        data.bestFitVec = fitVector
   return data
 
 
@@ -279,6 +282,8 @@ def main(argv):
     slave()
 
 if __name__ == "__main__":
+  global args
+  
   ''' Parse input and launch '''
   parser = argparse.ArgumentParser(description=('Evolve NEAT networks'))
   
@@ -293,6 +298,9 @@ if __name__ == "__main__":
   
   parser.add_argument('-n', '--num_worker', type=int,\
    help='number of cores to use', default=2)
+  
+  parser.add_argument('--no_check_best', action='store_true',\
+   help='do not check if the best individual is actually better')
 
   args = parser.parse_args()
 
