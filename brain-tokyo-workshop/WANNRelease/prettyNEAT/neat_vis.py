@@ -21,7 +21,7 @@ def main():
 
     for file_path in files:
         # View the individual network
-        result = nv.viewInd(file_path, 'swingup')
+        result = nv.viewInd(file_path, 'slimevolley')
 
         # Save the figure
         if isinstance(result, tuple):

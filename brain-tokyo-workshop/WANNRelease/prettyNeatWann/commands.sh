@@ -1,4 +1,8 @@
-python neat_train.py -p "./p/smilevolley_neat.json" -n 8 
+python neat_train.py \
+       -p "./p/default_neat_mod.json" \
+       --no_check_best \
+       -n 8 
+
 
 
 python neat_test.py \

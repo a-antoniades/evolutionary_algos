@@ -43,7 +43,8 @@ def master():
     reward = batchMpiEval(pop)  # Send pop to be evaluated by workers
     alg.tell(reward)           # Send fitness to NEAT    
 
-    data = gatherData(data,alg,gen,hyp)
+    data = gatherData(data,alg,gen,hyp, savePop=False)
+    data.savePop(alg.pop,fileName) # Save population as 2D numpy arrays
     print(gen, '\t - \t', data.display())
 
   # Clean up and data gathering at run end
